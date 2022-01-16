@@ -20,4 +20,3 @@ source mpv.zsh
 
 - https://github.com/mpv-player/mpv
 - https://github.com/peco/peco
-- https://github.com/tmux/tmux
