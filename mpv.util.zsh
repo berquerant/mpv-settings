@@ -30,11 +30,11 @@ mpv-play - play music or video
 
 Usage:
 
-mpv-play music
-  Play music files or uris from stdin.
+mpv-play music [playlist]
+  Play music files or uris from stdin or playlist.
 
-mpv-play video
-  Play video files or uris from stdin.
+mpv-play video [playlist]
+  Play video files or uris from stdin or playlist.
 EOS
 }
 
@@ -44,9 +44,11 @@ mpv-play() {
         return 1
     fi
     case "$1" in
-        "music") mpv-music
+        "music") shift
+                 mpv-music $@
                  ;;
-        "video") mpv-video
+        "video") shift
+                 mpv-video $@
                  ;;
         *) mpv-play-help
            return 1
@@ -55,6 +57,10 @@ mpv-play() {
 }
 
 mpv-music() {
+    if [ $# -gt 0 ] ; then
+        mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' --shuffle --playlist="$1"
+        return 0
+    fi
     local uid=`uuidgen`
     while read line ; do
         echo $line
@@ -64,6 +70,10 @@ mpv-music() {
 }
 
 mpv-video() {
+    if [ $# -gt 0 ] ; then
+        mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' --shuffle --playlist="$1"
+        return 0
+    fi
     local uid=`uuidgen`
     while read line ; do
         echo $line
