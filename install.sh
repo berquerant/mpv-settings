@@ -2,15 +2,22 @@
 
 d=$(cd $(dirname $0); pwd)
 
-printf "MUSIC_ROOT > "
-read MUSIC_ROOT
+if [ -z "$MUSIC_ROOT" ]
+then
+    printf "MUSIC_ROOT > "
+    read MUSIC_ROOT
+fi
 if [ -z "$MUSIC_ROOT" ]
 then
     echo "Please specify MUSIC_ROOT"
     exit 1
 fi
-printf "YTDL_ROOT (default: $HOME/ytdl) > "
-read YTDL_ROOT
+
+if ! env | grep -q "YTDL_ROOT"
+then
+    printf "YTDL_ROOT (default: $HOME/ytdl) > "
+    read YTDL_ROOT
+fi
 if [ -z "$YTDL_ROOT" ]
 then
     YTDL_ROOT=${HOME}/ytdl
