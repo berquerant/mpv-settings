@@ -8,15 +8,9 @@ Generate the setting files for mpv and install them:
 
 ``` shell
 ./install.sh
-```
-
-Use zsh aliases and functions (optional):
-
-``` shell
-source mpv.zsh
+. mpv.sh
 ```
 
 ## Requires
 
 - https://github.com/mpv-player/mpv
-- https://github.com/peco/peco
