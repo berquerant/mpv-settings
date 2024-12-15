@@ -36,10 +36,6 @@ EOS
 }
 
 mpv-play() {
-    if [ $# = 0 ] ; then
-        mpv-play-help
-        return 1
-    fi
     case "$1" in
         "")
             mpv-music "$@"
