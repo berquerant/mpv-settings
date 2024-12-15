@@ -1,10 +1,6 @@
-#!/bin/zsh
+#!/bin/bash
 
 export MPV_COMMON_OPTIONS=""
-
-alias mpv-find-music='find $MUSIC_ROOT -type f | peco'
-alias mpv-find-playlist='find $MPV_PLAYLISTD -type f | sort -r | peco'
-alias mpv-dump-playlist='cat `mpv-playlist`'
 
 export MPV_PLAY_HISTORY="${YTDL_LOGD}/mpv.play.history"
 # mpv-append-play-history [UUID] LOG
@@ -15,13 +11,14 @@ export MPV_PLAY_HISTORY="${YTDL_LOGD}/mpv.play.history"
 mpv-append-play-history() {
     local uid
     if [ $# = 1 ] ; then
-        uid=`uuidgen`
+        uid="$(uuidgen)"
     else
         uid="$1"
         shift
     fi
-    local now=`date "+%Y-%m-%d %H:%M:%S"`
-    echo "${now} ${uid} $1" >> "$MPV_PLAY_HISTORY"
+    local now
+    now="$(date "+%Y-%m-%d %H:%M:%S")"
+    echo "${now} ${uid} $*" >> "$MPV_PLAY_HISTORY"
 }
 
 mpv-play-help() {
@@ -30,7 +27,7 @@ mpv-play - play music or video
 
 Usage:
 
-mpv-play music [playlist]
+mpv-play [music] [playlist]
   Play music files or uris from stdin or playlist.
 
 mpv-play video [playlist]
@@ -44,14 +41,20 @@ mpv-play() {
         return 1
     fi
     case "$1" in
-        "music") shift
-                 mpv-music $@
-                 ;;
-        "video") shift
-                 mpv-video $@
-                 ;;
-        *) mpv-play-help
-           return 1
+        "")
+            mpv-music "$@"
+            ;;
+        "music")
+            shift
+            mpv-music "$@"
+            ;;
+        "video")
+            shift
+            mpv-video "$@"
+            ;;
+        *)
+            mpv-play-help
+            return 1
            ;;
     esac
 }
@@ -61,9 +64,10 @@ mpv-music() {
         mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' --shuffle --playlist="$1"
         return 0
     fi
-    local uid=`uuidgen`
-    while read line ; do
-        echo $line
+    local uid
+    uid="$(uuidgen)"
+    while read -r line ; do
+        echo "$line"
         mpv-append-play-history "$uid" "music $line"
         mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' "$line"
     done
@@ -74,9 +78,10 @@ mpv-video() {
         mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' --shuffle --playlist="$1"
         return 0
     fi
-    local uid=`uuidgen`
-    while read line ; do
-        echo $line
+    local uid
+    uid="$(uuidgen)"
+    while read -r line ; do
+        echo "$line"
         mpv-append-play-history "$uid" "video $line"
         mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' "$line"
     done
