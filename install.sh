@@ -50,5 +50,5 @@ export MPV_SCREENSHOTD="${YTDL_ROOT}/download/screenshot"
 export MPV_PLAYLISTD="${YTDL_ROOT}/playlist"
 export MPV_WATCH_LATERD="${YTDL_ROOT}/watch_later"
 export MPV_LOG="${YTDL_LOGD}/mpv.log"
-source ${d}/mpv.util.sh
+. ${d}/mpv.util.sh
 EOS
