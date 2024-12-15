@@ -1,10 +1,10 @@
 #!/bin/bash
 
-d=$(cd $(dirname $0); pwd)
+d="$(cd "$(dirname "$0")" || exit; pwd)"
 
 if [ -z "$MUSIC_ROOT" ]
 then
-    printf "MUSIC_ROOT > "
+    echo -n "MUSIC_ROOT > "
     read MUSIC_ROOT
 fi
 if [ -z "$MUSIC_ROOT" ]
@@ -15,12 +15,12 @@ fi
 
 if ! env | grep -q "YTDL_ROOT"
 then
-    printf "YTDL_ROOT (default: $HOME/ytdl) > "
+    echo -n "YTDL_ROOT (default: $HOME/ytdl) > "
     read YTDL_ROOT
 fi
 if [ -z "$YTDL_ROOT" ]
 then
-    YTDL_ROOT=${HOME}/ytdl
+    YTDL_ROOT="${HOME}/ytdl"
 fi
 
 export YTDL_ROOT
@@ -37,9 +37,9 @@ mkdir -p "${HOME}/.config" "$YTDL_ROOT" "$YTDL_OUTPUTD" "$YTDL_CACHED" "$YTDL_LO
 envsubst < "${d}/mpv/mpv.conf.tpl" > "${d}/mpv/mpv.conf"
 ln -snvf "${d}/mpv" "${HOME}/.config/"
 
-MPV_ZSH="${d}/mpv.zsh"
-cat > "$MPV_ZSH" << EOS
-#!/bin/zsh
+MPV_SH="${d}/mpv.sh"
+cat > "$MPV_SH" << EOS
+#!/bin/bash
 export MUSIC_ROOT="${MUSIC_ROOT}"
 export YTDL_ROOT="${YTDL_ROOT}"
 export YTDL_OUTPUTD="${YTDL_ROOT}/download/output"
@@ -50,7 +50,5 @@ export MPV_SCREENSHOTD="${YTDL_ROOT}/download/screenshot"
 export MPV_PLAYLISTD="${YTDL_ROOT}/playlist"
 export MPV_WATCH_LATERD="${YTDL_ROOT}/watch_later"
 export MPV_LOG="${YTDL_LOGD}/mpv.log"
-source ${d}/mpv.util.zsh
+source ${d}/mpv.util.sh
 EOS
-
-echo "Please load ${MPV_ZSH} to use utilities"
