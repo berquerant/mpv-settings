@@ -12,6 +12,8 @@ cache-on-disk=yes
 # options for youtube-dl
 ytdl-raw-options=output="${YTDL_OUTPUT_TEMPLATE}"
 screenshot-directory="${MPV_SCREENSHOTD}"
-cache-dir="${YTDL_CACHED}"
+demuxer-cache-dir="${YTDL_CACHED}"
+icc-cache-dir="${YTDL_CACHED}"
+gpu-shader-cache-dir="${YTDL_CACHED}"
 watch-later-directory="${MPV_WATCH_LATERD}"
 log-file="${MPV_LOG}"
