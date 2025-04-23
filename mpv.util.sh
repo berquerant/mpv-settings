@@ -61,12 +61,8 @@ mpv_music() {
         return 0
     fi
     local finished
-    local pid
     __cleanup() {
         finished=1
-        if [ -n "$pid" ] ; then
-            kill "$pid"
-        fi
     }
     trap __cleanup SIGINT
     local uid
@@ -77,10 +73,7 @@ mpv_music() {
         fi
         echo "$line"
         mpv_append_play_history "$uid" "music $line"
-        mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' "$line" &
-        pid=$!
-        wait "$pid"
-        pid=""
+        mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' "$line"
     done
 }
 
@@ -90,12 +83,8 @@ mpv_video() {
         return 0
     fi
     local finished
-    local pid
     __cleanup() {
         finished=1
-        if [ -n "$pid" ] ; then
-            kill "$pid"
-        fi
     }
     trap __cleanup SIGINT
     local uid
@@ -106,9 +95,6 @@ mpv_video() {
         fi
         echo "$line"
         mpv_append_play_history "$uid" "video $line"
-        mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' "$line" &
-        pid=$!
-        wait "$pid"
-        pid=""
+        mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' "$line"
     done
 }
