@@ -60,12 +60,27 @@ mpv_music() {
         mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' --shuffle --playlist="$1"
         return 0
     fi
+    local finished
+    local pid
+    __cleanup() {
+        finished=1
+        if [ -n "$pid" ] ; then
+            kill "$pid"
+        fi
+    }
+    trap __cleanup SIGINT
     local uid
     uid="$(uuidgen)"
     while read -r line ; do
+        if ((finished)) ; then
+            return 1
+        fi
         echo "$line"
         mpv_append_play_history "$uid" "music $line"
-        mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' "$line"
+        mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' "$line" &
+        pid=$!
+        wait "$pid"
+        pid=""
     done
 }
 
@@ -74,11 +89,26 @@ mpv_video() {
         mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' --shuffle --playlist="$1"
         return 0
     fi
+    local finished
+    local pid
+    __cleanup() {
+        finished=1
+        if [ -n "$pid" ] ; then
+            kill "$pid"
+        fi
+    }
+    trap __cleanup SIGINT
     local uid
     uid="$(uuidgen)"
     while read -r line ; do
+        if ((finished)) ; then
+            return 1
+        fi
         echo "$line"
         mpv_append_play_history "$uid" "video $line"
-        mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' "$line"
+        mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' "$line" &
+        pid=$!
+        wait "$pid"
+        pid=""
     done
 }
