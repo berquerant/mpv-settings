@@ -8,11 +8,11 @@ mpv_play - play music or video
 
 Usage:
 
-mpv_play [music] [playlist]
-  Play music files or uris from stdin or playlist.
+mpv_play [music] [MPV_OPTIONS...]
+  Play music files or uris from stdin.
 
-mpv_play video [playlist]
-  Play video files or uris from stdin or playlist.
+mpv_play video [MPV_OPTIONS...]
+  Play video files or uris from stdin.
 EOS
 }
 
@@ -37,21 +37,13 @@ mpv_play() {
 }
 
 mpv_music() {
-    if [ $# -gt 0 ] ; then
-        mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' --shuffle --playlist="$1"
-        return 0
-    fi
     local -r tmplist="$(mktemp)"
     cat - > "$tmplist"
-    mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' --playlist="$tmplist"
+    mpv ${MPV_COMMON_OPTIONS} --no-video --ytdl-format='worstvideo+bestaudio' --playlist="$tmplist" "$@"
 }
 
 mpv_video() {
-    if [ $# -gt 0 ] ; then
-        mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' --shuffle --playlist="$1"
-        return 0
-    fi
     local -r tmplist="$(mktemp)"
     cat - > "$tmplist"
-    mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' --playlist="$tmplist"
+    mpv ${MPV_COMMON_OPTIONS} --ontop --border=no --autofit=600 --geometry=100%:100% --ytdl-format='[height<=480]+bestaudio' --playlist="$tmplist" "$@"
 }
